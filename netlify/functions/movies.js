@@ -15,79 +15,65 @@ exports.handler = async function(event) {
   // turn the movies file into a JavaScript object, wait for that to happen
   let moviesFromCsv = await csv(moviesFile)
 
+
   // write the movies to the back-end console, check it out
-  // console.log(moviesFromCsv)
+  console.log(moviesFromCsv[0])
 
   // 🔥 hw6: your recipe and code starts here!
 // Get the parameters of year and genre
   let year = event.queryStringParameters.year
   let genre = event.queryStringParameters.genre
-// Define URL
-// let url = `http://localhost:8888/.netlify/functions/movies?year=${year}&genre=${genre}`
-
-
-// // Fetch the url, wait for a response and store the response in memory
-// let response = await fetch(url)
-
-// // Ask for the json formatted response and store it in memory
-// let filteredMovies = await response.json()
-// Create a new object to hold the movie count and data
-let movieResults = {}
-
-// Create an empty array for the movies
-movieResults.movies = []
-
 
 // Loop through movie data... for each one:
-for (let x = 0; x < moviesFromCsv.length; x++) {
+// for (let x = 0; x < moviesFromCsv.length; x++) {
 // Store each movie from the csv in memory
-let movie = moviesFromCsv[x]
 
+let movieResults = {
+  numResults: 0,
+  movies: []
+}
+
+// Run a loop to go through movie data
+for (let i=0; i < moviesFromCsv.length; i++) {
+  // Store each movie in memory
+  let movie = moviesFromCsv[i]
   // If movie has no genre or runtime ignore results
-  if (movie.genres == `\\N` || movie.runtimeMinutes == `\\N`) {
+  if (movie.genres != `\\N` || movie.runtimeMinutes != `\\N`) {
 
-  // Otherwise....
-    } else {
+    } else if (movie.genres == `${genre}` && movie.startYear == `${year}`) {
+      
+        // Create a new movie object containing:
+        let movieInfo = {
+          title: movie.primaryTitle,
+          yearReleased: movie.startYear,
+          genre: movie.genres
+          }
 
-// Create a new movie object containing:
-let movieInfo = {
-    // [Movies] containing the primary title, year released and movie genre
-title: movie.primaryTitle,
-yearReleased: movie.startYear,
-genre: movie.genres
+        
 
-    }
 // Push the movie data object to the final Array
-movieResults.movies.push(movieInfo)
+movieResults.push(movieInfo)
 
+// Count the number of results
+movieResults.numResults = movieResults.movies.count
 
-}
-}
+      
+} else {}
 
-// add the number of movie results to the movie results object
-movieResults.numResults = movieResults.movies.length
-
-  
   if (year == undefined || genre == undefined) {
     return {
       statusCode: 418, // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-      body: `nopeeeee` // a string of data
+      body: `Not so fast my friend!` // a string of data
     }
   }
   else {
-    let returnValue = {
-      numResults: 0,
-      movies: []
-    }
-
-    for (let i=0; i < moviesFromCsv.length; i++) {
-
-    }
-
+    
     // a lambda function returns a status code and a string of data
     return {
       statusCode: 200, // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
       body: JSON.stringify(movieResults) // a string of data
     }
-  }
+  
+}
+}
 }
