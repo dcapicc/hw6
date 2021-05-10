@@ -20,7 +20,7 @@ exports.handler = async function(event) {
   // console.log(moviesFromCsv)
 
   // 🔥 hw6: your recipe and code starts here!
-// Get the parameters of year and genre
+  // Get the parameters of year and genre
   let year = event.queryStringParameters.year
   let genre = event.queryStringParameters.genre
       
@@ -39,7 +39,6 @@ exports.handler = async function(event) {
       movies: []
     }
 
-
     // Run a loop to go through movie data
     for (let i = 0; i < moviesFromCsv.length; i++) {
       // Store each movie in memory
@@ -54,7 +53,7 @@ exports.handler = async function(event) {
         let movieInfo = {
           title: movie.primaryTitle,
           yearReleased: movie.startYear,
-          genre: movie.genres
+          genre: movie.genres,
           }
         // Push the movie data object to the final Array
         movieResults.movies.push(movieInfo)
